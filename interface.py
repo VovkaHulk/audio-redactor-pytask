@@ -1,7 +1,12 @@
 from tkinter import *
+from pydub.playback import play
+import pydub
 from PIL import Image
 from PIL import ImageTk
+import main
 
+audio = pydub.AudioSegment.silent()
+s, f = 0, 0
 
 def CloseApp():
     root.destroy()
@@ -9,26 +14,35 @@ def CloseApp():
 
 
 def LoadAudioFile():
+    global audio
     # ВСТАВЬ СЮДА ХУЕТУ, ЧТОБЫ ФАЙЛ ГРУЗИЛО
+    route = input_file_entry.get()
+    audio = main.open_audio(route)
     print('у тебя файл не грузит, дебила кусок')
     audio_image_panel.place(x=0, y=40)
 
 
 def VolumeChanged(new_volume):
+    global audio
     print('У тебя громкость не меняется, дебила запчасть')
+    audio = main.change_volume(audio, new_volume, s, f)
 
 
 def SpeedChanged(new_speed):
+    global audio
     print('У тебя скорость не меняется, ебала')
+    audio = main.change_speed(audio, int(new_speed)/100, s, f)
 
 
 def ReplaceSelectedFragment():
+    global s, f
+    s = 42
     print('Еблан, у тебя фрагмент не удаляется!!!!ДЕБИЛОЙД')
 
 
 def OpenReplaceWindow():
     replace_fragment_window = Tk()
-    replace_fragment_window.title('Вырезка фрагмента')
+    replace_fragment_window.title('Выбор фрагмента')
     replace_fragment_window.geometry('300x200')
 
     text_lable = Label(replace_fragment_window, text='Выберите фрагмент')
@@ -36,14 +50,14 @@ def OpenReplaceWindow():
 
     from_entry = Entry(replace_fragment_window, width=10)
     from_entry.place(x=50, y=50)
-    from_entry.insert(0, 'От')
+    from_entry.insert(0, 'От ')
 
     lable_from = Label(replace_fragment_window, text='->')
     lable_from.place(x=120, y=50)
 
     to_entry = Entry(replace_fragment_window, width=10)
     to_entry.place(x=150, y=50)
-    to_entry.insert(0, 'До')
+    to_entry.insert(0, 'До ')
 
     confirm_button = Button(replace_fragment_window, text='Confirm',
                             command=ReplaceSelectedFragment)
@@ -84,10 +98,10 @@ volume_scale = Scale(orient=VERTICAL, length=200, from_=100.0, to=0.0,
                      variable=volume, command=VolumeChanged)
 volume_scale.place(x=15, y=150)
 
-speed = IntVar(value=1)
+speed = IntVar(value=100)
 speed_lable = Label(text='Скорость')
 speed_lable.place(x=100, y=130)
-speed_scale = Scale(orient=VERTICAL, length=200, from_=64.0, to=0.1,
+speed_scale = Scale(orient=VERTICAL, length=200, from_=200, to=1,
                     variable=speed, command=SpeedChanged)
 speed_scale.place(x=100, y=150)
 
