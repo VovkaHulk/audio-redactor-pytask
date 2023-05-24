@@ -24,3 +24,8 @@ def change_speed(segment: AudioSegment, value, start=0, end=0):
     slice = segment[start:end]
     slice = pydub.effects.speedup(slice, value)
     return segment[:start] + slice + segment[end:]
+
+
+def play(audio):
+    pydub.playback.play(audio)
+
